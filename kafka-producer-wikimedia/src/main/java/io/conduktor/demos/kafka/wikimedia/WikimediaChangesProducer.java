@@ -17,8 +17,20 @@ public class WikimediaChangesProducer {
         // create Producer Properties
         Properties properties = new Properties();
         properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
+        // kafka-console-consumer --bootstrap-server localhost:9092 --topic wikimedia.recentchange
+
+//        properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "lucky-liger-8917-eu2-kafka.upstash.io:9092");
+//        properties.setProperty("security.protocol", "SASL_SSL");
+//        properties.setProperty("sasl.jaas.config", "org.apache.kafka.common.security.scram.ScramLoginModule required username=\"bHVja3ktbGlnZXItODkxNyStYtML-4a7QhGx1AxqiNMJ2awDAIjLF613gATuuBM\" password=\"N2IzYWQzNTktNmI5MS00MjliLWFhNDMtYzIwZjI5MjkxYTk1\";");
+//        properties.setProperty("sasl.mechanism", "SCRAM-SHA-256");
+
         properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+
+        // set high throughput producer config
+        properties.setProperty(ProducerConfig.LINGER_MS_CONFIG, "20");
+        properties.setProperty(ProducerConfig.BATCH_SIZE_CONFIG, Integer.toString(32 * 1024));
+        properties.setProperty(ProducerConfig.COMPRESSION_TYPE_CONFIG, "snappy");
 
         // create the Producer
         KafkaProducer<String, String> producer = new KafkaProducer<>(properties);
